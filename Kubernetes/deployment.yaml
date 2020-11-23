@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mh-anthhgwo-scp
+  labels:
+    app: mh
+spec:
+  replicas: 16
+  selector:
+    matchLabels:
+      app: mh
+  template:
+    metadata:
+      labels:
+        app: mh
+    spec:
+      containers:
+      - name: mh
+        image: rootcl/py38:1.0
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 0.25
