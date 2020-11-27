@@ -1,4 +1,4 @@
-## Desde docker
+## Docker
 
 ```
 docker pull jupyter/datascience-notebook:latest

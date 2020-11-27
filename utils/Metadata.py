@@ -75,8 +75,22 @@ class Metadata:
                 ,'scpnrh5.txt':[0,55]
 
                 }
+        
+        self.metricsExplor = {
+           'explor_hussain':'Hussain',
+           'explor_inertia_weigth':'Weigth of Inertia',
+           'explor_dimensionality': 'Dimensionality',
+           'explor_leunggaoxu': 'Leung Gaoxu',
+           'explor_entropy':'Entropy',
+           'explor_hamming': 'Hamming',
+           'explor_inertia_momentum': 'Momentum of Inertia'
+       }
+
     def getOptimos(self):
         return self.optimos
+    
+    def getMetrics(self):
+        return self.metricsExplor
     
     def dfOptimos(self):
         
@@ -109,7 +123,8 @@ class Metadata:
                         'qlAlphaType': params['qlAlphaType'],
                         'date_start':row[3],
                         'date_end':row[4],
-                        'status':row[5]
+                        'status':row[5],
+                        'fitness':row[6]
 
             },ignore_index=True,sort=False)
             
@@ -121,7 +136,7 @@ class Metadata:
         df = pd.DataFrame([])
     
         for row in resultados:
-            
+                        
             df = df.append({
                         'id_ejec':row[1], #id ejec
                         'fitness':row[2]
@@ -134,3 +149,63 @@ class Metadata:
         except:
             return []
         return df
+    
+    def dfIteraciones(self,resultados):
+
+        try:
+
+            df = pd.DataFrame([])
+            for row in resultados:
+
+                params = json.loads(row[4])
+                diversityStr = params['Diversidades'].replace("[","").replace("]","").split(" ")
+                explorStr = params['PorcentajeExplor'].replace("[","").replace("]","").split(" ")
+                exploitStr = params['PorcentajeExplot'].replace("[","").replace("]","").split(" ")
+
+                try:
+                    params['numReparaciones']
+                except:
+                    params['numReparaciones'] = 0
+
+                diversity = []
+                for d in diversityStr:
+                    if d == '':
+                        d=0
+                    diversity.append(float(d))
+
+                exploration = []
+                for e in explorStr:
+                    if e== '':
+                        e=0
+                    exploration.append(float(e))
+
+                exploitation = []
+
+                for e in exploitStr:
+                    if e == '':
+                        e=0
+                    exploitation.append(float(e))
+
+                df = df.append({
+                        'id_ejec':row[0],
+                        'algorithm':row[1],
+                        'iter':row[2],
+                        'fitness':row[3],
+                        'ds':params['DS'],
+                        'cpu_time':params['processTime'],
+                        'repairN':params['numReparaciones'],
+                        'explor_hussain':exploration[0],
+                        'explor_inertia_weigth':exploration[1],
+                        'explor_dimensionality':exploration[2],
+                        'explor_leunggaoxu':exploration[3],
+                        'explor_entropy':exploration[4],
+                        'explor_hamming':exploration[5],
+                        'explor_inertia_momentum':exploration[6]
+
+
+
+                },ignore_index=True,sort=False)
+        except:
+            return []
+        return df
+    
